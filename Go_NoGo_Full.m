@@ -22,9 +22,10 @@
 
 function GNG
 close all; clear
+
 %% Experimental Preferences
 
-prop.photoOn = 1;
+prop.photoOn = 1; %if photo sensor is used, set to 1
 %dell = 1;
 
 % Extra Preferences
@@ -33,11 +34,11 @@ viewdist = 100; %distance from the screen (cm)
 pixsize = 53.2/1920; %pixel size, computer-specific
 
 % Trials
-prop.numPract = 10;
-prop.numPractGo = 8;
-prop.numGo = 206;
-prop.numNoGo = 39;
-prop.numTot = prop.numGo + prop.numNoGo;
+prop.numPract = 10; %number of practice trials
+prop.numPractGo = 8; %number of GO practice trials
+prop.numGo = 206; %number of GO experimental trials
+prop.numNoGo = 39; %number of NOGO experimental trials
+prop.numTot = prop.numGo + prop.numNoGo; 
 prop.percGo = prop.numGo/prop.numTot;
 
 % Timing and Accuracy
@@ -66,7 +67,7 @@ prop.crossLoc = [-prop.crossSize prop.crossSize 0 0; ...
 % prop.done = imread('im_done.png');
 
 % Import Stimulus Images
-prop.stimX = imread('im_stim_X.png');
+prop.stimX = imread('im_stim_X.png'); 
 prop.stimK = imread('im_stim_K.png');
 
 % Stimulus Dimensions
@@ -109,7 +110,7 @@ end
 % File Name
 fileName = [prop.root, filesep, 'RUNS', filesep, num2str(prop.subID), '_S' num2str(prop.session), '_R' num2str(prop.run), prop.mode, '.mat'];
 
-if exist(fileName) && prop.subID~=0
+if exist(fileName) && prop.subID~=0 %prevents overwriting if there is a typo
     Screen('CloseAll');
     msgbox('File already exists.', 'modal') 
     return;
@@ -118,17 +119,17 @@ end
 %% Mode Conditions
 
 % Stimulus Conditions
-if prop.mode == 'p'
+if prop.mode == 'p' %practice mode
     prop.nTrials = prop.numPract;
     prop.stim(1:prop.nTrials,1) = 0;
     prop.stim(1:prop.numPractGo,1) = 1;
-elseif prop.mode == 't'
+elseif prop.mode == 't' %experimental mode
     prop.nTrials = prop.numTot;
     prop.stim(1:prop.nTrials,1) = 0;
     prop.stim(1:prop.numGo,1) = 1;
 end
 
-prop.nBreak = floor(prop.nTrials/3);
+prop.nBreak = floor(prop.nTrials/3); %number of trials in each block
 
 % Shuffle Conditions
 prop.stim = prop.stim(randperm(length(prop.stim)));
@@ -163,7 +164,7 @@ prop.stats.meanISI = mean(prop.ISI(:));
 prop.stats.twoNoGo = 0;
 for trial = 1:length(prop.stim)-1
     if prop.stim(trial) == 0 & prop.stim(trial+1) == 0
-        prop.stats.twoNoGo = prop.stats.twoNoGo+1;
+        prop.stats.twoNoGo = prop.stats.twoNoGo+1; %reshuffles if two NoGo trials in a row
     end
 end
 
@@ -190,12 +191,12 @@ while KbCheck; end
 KbName('UnifyKeyNames');
 while 1
     [keyIsDown,secs,keyCode]=KbCheck;
-    if keyCode(KbName('space'))
+    if keyCode(KbName('space')) %start task
         if prop.photoOn == 1
             Screen('FillRect', wPtr , prop.dispBlack); %background color
             Screen('FillOval', wPtr, prop.photoStim(3,:), prop.photoDim); %photo sensor
             Screen('Flip',wPtr);
-            WaitSecs(prop.timeStim);
+            WaitSecs(prop.timeStim); 
         end
         break
     end
